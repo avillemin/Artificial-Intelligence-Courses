@@ -91,3 +91,11 @@ In addition to the simplification, this paper also proposed a modification of th
 
 
 Although ES might be a way to search for more novel solutions that are difficult for gradient-based methods to find, it still vastly underperforms gradient-based methods on many problems where we can calculate high quality gradients. For instance, only an idiot would attempt to use a genetic algorithm for image classification. But sometimes such people do exist in the world, and sometimes these explorations can be fruitful!
+
+# Mixture Density Networks
+
+Instead of having a neural network, the MDN gives us a distribution of possible values of the output. To do so, the network is going to output the mean and the standard deviation of the normal distribution.
+But what if the distribution is not a normal distribution ?
+Any general distribution can be broken down into a mixture of normal distributions.
+
+With alpha the weights of each distribution. The sum of all the alphas should be equal to 1. To do so, we are going to apply a softamx function.
