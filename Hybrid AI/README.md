@@ -110,3 +110,6 @@ Any general distribution can be broken down into a mixture of normal distributio
 ![Alt text](https://github.com/avillemin/SuperDataScience-Courses/blob/master/Hybrid%20AI/MDN2.png)
 
 With alpha the weights of each distribution. The sum of all the alphas should be equal to 1. To do so, we are going to apply a softamx function.
+The goal of the MDN-RNN is to predict what's coming next, has this drawing :
+
+![Alt text](https://magenta.tensorflow.org/assets/sketch_rnn_demo/img/multi_sketch_mosquito.gif)
