@@ -113,3 +113,5 @@ With alpha the weights of each distribution. The sum of all the alphas should be
 The goal of the MDN-RNN is to predict what's coming next, has this drawing :
 
 ![Alt text](https://magenta.tensorflow.org/assets/sketch_rnn_demo/img/multi_sketch_mosquito.gif)
+
+Note: we use tf.nn.rnn_cell.DropoutWrapper to add a dropout of the input or output. 
