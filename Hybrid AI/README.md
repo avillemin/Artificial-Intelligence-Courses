@@ -1,3 +1,9 @@
+# Table of Contents   
+
+1. [World Model](#world)
+2. [Evolution Strategy](#evolution)
+
+<a name="world"></a>
 # World Model
    
 [Course] https://www.udemy.com/artificial-intelligence-masterclass/   
@@ -27,6 +33,7 @@ In this linear model, Wc and bc are the weight matrix and bias vector that maps 
 
 <p align="center"><img src="https://worldmodels.github.io/assets/conv_vae_label.svg" width="350" height="600"></p>
 
+<a name="evolution"></a>
 # Evolution Strategy
 
 OpenAI published a paper called Evolution Strategies as a Scalable Alternative to Reinforcement Learning where they showed that evolution strategies, while being less data efficient than RL, offer many benefits. The ability to abandon gradient calculation allows such algorithms to be evaluated more efficiently. It is also easy to distribute the computation for an ES algorithm to thousands of machines for parallel computation. By running the algorithm from scratch many times, they also showed that policies discovered using ES tend to be more diverse compared to policies discovered by RL algorithms.
@@ -114,4 +121,67 @@ The goal of the MDN-RNN is to predict what's coming next, has this drawing :
 
 ![Alt text](https://magenta.tensorflow.org/assets/sketch_rnn_demo/img/multi_sketch_mosquito.gif)
 
-Note: we use tf.nn.rnn_cell.DropoutWrapper to add a dropout of the input or output. 
+Note: we use tf.nn.rnn_cell.DropoutWrapper to add a dropout of the input or output.    
+
+### Confusion with the outputs of the LSTM:   
+   
+https://machinelearningmastery.com/return-sequences-and-return-states-for-lstms-in-keras/   
+The output of an LSTM cell or layer of cells is called the hidden state.   
+**Return States**  
+This is confusing, because each LSTM cell retains an internal state that is not output, called the cell state, or c.   
+Keras provides the return_state argument to the LSTM layer that will provide access to the hidden state output (state_h) and the cell state (state_c). For example: 
+```python
+lstm1, state_h, state_c = LSTM(1, return_state=True)
+```
+This may look confusing because both lstm1 and state_h refer to the same hidden state output. The reason for these two tensors being separate will become clear in the next section. We can demonstrate access to the hidden and cell states of the cells in the LSTM layer with a worked example listed below.
+```python
+from keras.models import Model
+from keras.layers import Input
+from keras.layers import LSTM
+from numpy import array
+# define model
+inputs1 = Input(shape=(3, 1))
+lstm1, state_h, state_c = LSTM(1, return_state=True)(inputs1)
+model = Model(inputs=inputs1, outputs=[lstm1, state_h, state_c])
+# define input data
+data = array([0.1, 0.2, 0.3]).reshape((1,3,1))
+# make and show prediction
+print(model.predict(data))
+```
+Running the example returns 3 arrays:   
+The LSTM hidden state output for the last time step.   
+The LSTM hidden state output for the last time step (again).   
+The LSTM cell state for the last time step.   
+```python
+[array([[ 0.10951342]], dtype=float32),
+ array([[ 0.10951342]], dtype=float32),
+ array([[ 0.24143776]], dtype=float32)]
+```
+**Return States and Sequences**   
+We can access both the sequence of hidden state and the cell states at the same time. This can be done by configuring the LSTM layer to both return sequences and return states.
+```python
+from keras.models import Model
+from keras.layers import Input
+from keras.layers import LSTM
+from numpy import array
+# define model
+inputs1 = Input(shape=(3, 1))
+lstm1, state_h, state_c = LSTM(1, return_sequences=True, return_state=True)(inputs1)
+model = Model(inputs=inputs1, outputs=[lstm1, state_h, state_c])
+# define input data
+data = array([0.1, 0.2, 0.3]).reshape((1,3,1))
+# make and show prediction
+print(model.predict(data))
+```
+Running the example, we can see now why the LSTM output tensor and hidden state output tensor are declared separably. The layer returns the hidden state for each input time step, then separately, the hidden state output for the last time step and the cell state for the last input time step. This can be confirmed by seeing that the last value in the returned sequences (first array) matches the value in the hidden state (second array).
+```python
+[array([[[-0.02145359],
+        [-0.0540871 ],
+        [-0.09228823]]], dtype=float32),
+ array([[-0.09228823]], dtype=float32),
+ array([[-0.19803026]], dtype=float32)]
+```
+I learned that:   
+That return sequences return the hidden state output for each input time step.   
+That return state returns the hidden state output and cell state for the last input time step.   
+That return sequences and return state can be used at the same time.   
