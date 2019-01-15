@@ -1,7 +1,14 @@
 # Table of Contents   
 
-1. [World Model](#world)
-2. [Evolution Strategy](#evolution)
+1. [World Model](#world)   
+2. [Evolution Strategy](#evolution)   
+   a. [Simple Evolution Strategy](#simple)   
+   b. [Simple Genetic Algorithm](#genetic)   
+   c. [Covariance-Matrix Adaptation Evolution Strategy](#cov)   
+   d. [Natural Evolution Strategies](#natural)   
+   e. [OpenAI Evolution Strategy](#openai)   
+3. [Variational Auto Encoder](#vae)   
+4. [Mixture Density Networks](#mdn)  
 
 <a name="world"></a>
 # World Model
@@ -45,6 +52,7 @@ The diagrams below are top-down plots of shifted 2D Schaffer and Rastrigin funct
 
 Although there are many definitions of evolution strategies, we can define an evolution strategy as an algorithm that provides the user a set of candidate solutions to evaluate a problem. The evaluation is based on an objective function that takes a given solution and returns a single fitness value. Based on the fitness results of the current solutions, the algorithm will then produce the next generation of candidate solutions that is more likely to produce even better results than the current generation. The iterative process will stop once the best known solution is satisfactory for the user.
 
+<a name="simple"></a>
 ## Simple Evolution Strategy
 
 One of the simplest evolution strategy we can imagine will just sample a set of solutions from a Normal distribution, with a mean μ and a fixed standard deviation σ. Initially, μ is set at the origin. After the fitness results are evaluated, we set μ to the best solution in the population, and sample the next generation of solutions around this new mean. This is how the algorithm behaves over 20 generations on Schaffer-2D Function and Rastrigin-2D Function:
@@ -53,6 +61,7 @@ One of the simplest evolution strategy we can imagine will just sample a set of 
 
 Given its greedy nature, it throws away all but the best solution, and can be prone to be stuck at a local optimum for more complicated problems. It would be beneficial to sample the next generation from a probability distribution that represents a more diverse set of ideas, rather than just from the best solution from the current generation.
 
+<a name="genetic"></a>
 ## Simple Genetic Algorithm
 
 The idea is quite simple: keep only 10% of the best performing solutions in the current generation, and let the rest of the population die. In the next generation, to sample a new solution is to randomly select two solutions from the survivors of the previous generation, and recombine their parameters to form a new solution. This crossover recombination process uses a coin toss to determine which parent to take each parameter from. In the case of our 2D toy function, our new solution might inherit x or y from either parents with 50% chance. Gaussian noise with a fixed standard deviation will also be injected into each new solution after this recombination process.
@@ -61,6 +70,7 @@ The idea is quite simple: keep only 10% of the best performing solutions in the 
 
 Genetic algorithms help diversity by keeping track of a diverse set of candidate solutions to reproduce the next generation. However, in practice, most of the solutions in the elite surviving population tend to converge to a local optimum over time. There are more sophisticated variations of GA out there, such as CoSyNe, ESP, and NEAT, where the idea is to cluster similar solutions in the population together into different species, to maintain better diversity over time.
 
+<a name="cov"></a>
 ## Covariance-Matrix Adaptation Evolution Strategy (CMA-ES)
 
 A shortcoming of both the Simple ES and Simple GA is that our standard deviation noise parameter is fixed. There are times when we want to explore more and increase the standard deviation of our search space, and there are times when we are confident we are close to a good optima and just want to fine tune the solution. We basically want our search process to behave like this:
@@ -71,6 +81,7 @@ https://en.wikipedia.org/wiki/CMA-ES
 
 CMA-ES an algorithm that can take the results of each generation, and adaptively increase or decrease the search space for the next generation. It will not only adapt for the mean μ and sigma σ parameters, but will calculate the entire covariance matrix of the parameter space. At each generation, CMA-ES provides the parameters of a multi-variate normal distribution to sample solutions from. To see how the covariance matrix is calculated, go to : http://blog.otoro.net/2017/10/29/visual-evolution-strategies/
 
+<a name="natural"></a>
 ## Natural Evolution Strategies
 
 Imagine if you had built an artificial life simulator, and you sample a different neural network to control the behavior of each ant inside an ant colony. Using the Simple Evolution Strategy for this task will optimise for traits and behaviours that benefit individual ants, and with each successive generation, our population will be full of alpha ants who only care about their own well-being.  
@@ -88,6 +99,7 @@ Lots of Mathematics behind it, see the original website for more information.
 
 I like this algorithm because like CMA-ES, the \sigmaσ’s can adapt so our search space can be expanded or narrowed over time. Because the correlation parameter is not used in this implementation, the efficiency of the algorithm is O(N)O(N) so I use PEPG if the performance of CMA-ES becomes an issue. I usually use PEPG when the number of model parameters exceed several thousand.
 
+<a name="openai"></a>
 ## OpenAI Evolution Strategy
 
 In OpenAI’s paper,https://blog.openai.com/evolution-strategies/, they implement an evolution strategy that is a special case of the REINFORCE-ES algorithm outlined earlier. In particular, σ is fixed to a constant number, and only the μ parameter is updated at each generation. Below is how this strategy looks like, with a constant σ parameter:
@@ -99,12 +111,14 @@ In addition to the simplification, this paper also proposed a modification of th
 
 Although ES might be a way to search for more novel solutions that are difficult for gradient-based methods to find, it still vastly underperforms gradient-based methods on many problems where we can calculate high quality gradients. For instance, only an idiot would attempt to use a genetic algorithm for image classification. But sometimes such people do exist in the world, and sometimes these explorations can be fruitful!
 
+<a name="vae"></a>
 # Variational Auto-Encoder
 
 ![Alt text](https://github.com/avillemin/SuperDataScience-Courses/blob/master/Hybrid%20AI/VAR.png)
 
 ![Alt text](https://github.com/avillemin/SuperDataScience-Courses/blob/master/Hybrid%20AI/reparameterization_trick.png)
 
+<a name="mdn"></a>
 # Mixture Density Networks
 
 Instead of having a neural network, the MDN gives us a distribution of possible values of the output. To do so, the network is going to output the mean and the standard deviation of the normal distribution.
