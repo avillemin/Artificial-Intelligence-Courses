@@ -195,7 +195,7 @@ Running the example, we can see now why the LSTM output tensor and hidden state 
  array([[-0.09228823]], dtype=float32),
  array([[-0.19803026]], dtype=float32)]
 ```
-I learned that:   
+I learned:   
 That return sequences return the hidden state output for each input time step.   
 That return state returns the hidden state output and cell state for the last input time step.   
 That return sequences and return state can be used at the same time.   
