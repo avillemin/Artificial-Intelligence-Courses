@@ -42,7 +42,9 @@ In this linear model, Wc and bc are the weight matrix and bias vector that maps 
 
 <a name="evolution"></a>
 # Evolution Strategy
-
+   
+Essential to gradient descent is the computation of proper gradients that propel you towards a good solution. In supervised learning, it is possible to obtain 'high quality gradients' with relative ease through the labeled datasets. In reinforcement learning however, you are only given a sparse reward, as the random initial behaviour will not lead to a high reward. In addition this reward only occurs after a couple of actions. While the loss in classification and regression is a relatively good proxy for the function you are trying to approximate, the reward in reinforcement learning is typically not a very good proxy of the behaviour or function you want to learn. Given that the gradients in reinforcement learning are not always of good quality, evolution algorithms have recently been used by Uber and OpenAI to improve learning.   
+   
 OpenAI published a paper called Evolution Strategies as a Scalable Alternative to Reinforcement Learning where they showed that evolution strategies, while being less data efficient than RL, offer many benefits. The ability to abandon gradient calculation allows such algorithms to be evaluated more efficiently. It is also easy to distribute the computation for an ES algorithm to thousands of machines for parallel computation. By running the algorithm from scratch many times, they also showed that policies discovered using ES tend to be more diverse compared to policies discovered by RL algorithms.
 
 
