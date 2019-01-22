@@ -40,6 +40,15 @@ In this linear model, Wc and bc are the weight matrix and bias vector that maps 
 
 <p align="center"><img src="https://worldmodels.github.io/assets/conv_vae_label.svg" width="350" height="600"></p>
 
+KL Loss: in mathematical statistics, the Kullback–Leibler divergence (also called relative entropy) is a measure of how one probability distribution is different from a second, reference probability distribution.   
+
+<p align="center"><img src="https://github.com/avillemin/SuperDataScience-Courses/blob/master/Hybrid%20AI/general%20KL%20loss.PNG"></p>      
+If we assume our prior is a unit gaussian i.e. μ2=0 and σ2=1, this simplifies down to   
+   
+<p align="center"><img src="https://github.com/avillemin/SuperDataScience-Courses/blob/master/Hybrid%20AI/normal%20KL%20loss.PNG"></p> 
+
+σ1 is here the variance. It can be confusing with the standard deviation (i.e. log(σ1)−σ1 → 2log(σ1)−σ21).
+   
 <a name="evolution"></a>
 # Evolution Strategy
    
