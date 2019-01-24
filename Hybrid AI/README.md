@@ -147,7 +147,10 @@ The goal of the MDN-RNN is to predict what's coming next, has this drawing :
 ![Alt text](https://magenta.tensorflow.org/assets/sketch_rnn_demo/img/multi_sketch_mosquito.gif)
 
 Note: we use tf.nn.rnn_cell.DropoutWrapper to add a dropout of the input or output.    
-Loss: log-likelihood = gives how good our statistical model is, given a specified observed data
+Loss: log-likelihood = gives how good our statistical model is, given a specified observed data   
+We have used a logarithm to convert a product of probabilities into a summation of log probabilities for numerical stability, negation to allow for minimization instead of maximization, and averaged the summation to make the function invariant to batch sizes
+
+<p align="center"><img src="https://github.com/avillemin/SuperDataScience-Courses/blob/master/Hybrid%20AI/MDN%20loss.PNG"></p>
 
 ### Confusion with the outputs of the LSTM:   
    
