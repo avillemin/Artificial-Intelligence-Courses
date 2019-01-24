@@ -147,6 +147,7 @@ The goal of the MDN-RNN is to predict what's coming next, has this drawing :
 ![Alt text](https://magenta.tensorflow.org/assets/sketch_rnn_demo/img/multi_sketch_mosquito.gif)
 
 Note: we use tf.nn.rnn_cell.DropoutWrapper to add a dropout of the input or output.    
+Loss: log-likelihood = gives how good our statistical model is, given a specified observed data
 
 ### Confusion with the outputs of the LSTM:   
    
