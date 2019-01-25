@@ -154,6 +154,8 @@ We have used a logarithm to convert a product of probabilities into a summation 
 
 ### Confusion with the outputs of the LSTM:   
    
+<p align="center"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/The_LSTM_cell.png/1200px-The_LSTM_cell.png"></p>   
+   
 https://machinelearningmastery.com/return-sequences-and-return-states-for-lstms-in-keras/   
 The output of an LSTM cell or layer of cells is called the hidden state.   
 **Return States**  
