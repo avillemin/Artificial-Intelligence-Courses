@@ -186,3 +186,61 @@ Xgboost and lightGBM tend to be used on tabular data or text data that has been 
 Incidentally, xgboost and lightGBM both treat missing values in the same way as xgboost treats the zero values in sparse matrices; **it ignores them during split finding, then allocates them to whichever side reduces the loss the most**. 
 Though lightGBM does not enable ignoring zero values by default, it has an option called zero_as_missing which, if set to True, will regard all zero values as missing. According to this thread on GitHub, lightGBM will treat missing values in the same way as xgboost as long as the parameter use_missing is set to True (which is the default behavior).
 
+## Avoid over-fitting
+
+According to lightGBM documentation, when facing overfitting you may want to do the following parameter tuning:   
+- Use small max_bin
+- Use small num_leaves
+- Use min_data_in_leaf and min_sum_hessian_in_leaf
+- Use bagging by set bagging_fraction and bagging_freq
+- Use feature sub-sampling by set feature_fraction
+- Use bigger training data
+- Try lambda_l1, lambda_l2 and min_gain_to_split for regularization
+- Try max_depth to avoid growing deep tree   
+     
+Surely num_leaves is one of the most important parameters that controls the complexity of the model. With it, you set the maximum number of leaves each weak learner has. Large num_leaves increases accuracy on the training set and also the chance of getting hurt by overfitting. According to the documentation, one simple way is that num_leaves = 2^(max_depth) however, considering that in lightgbm a leaf-wise tree is deeper than a level-wise tree you need to be careful about overfitting! As a result, It is necessary to tune num_leaves with the max_depth together.
+
+## Others parameters
+
+### num_iterations
+
+Num_iterations specifies the number of boosting iterations (trees to build). The more trees you build the more accurate your model can be at the cost of:
+- Longer training time
+- Higher chance of overfitting   
+
+Start with a lower number of trees to build a baseline and increase it later when you want to squeeze the last % out of your model.
+It is recommended to use smaller learning_rate with larger num_iterations. Also, you should use early_stopping_rounds if you go for higher num_iterations to stop your training when it is not learning anything useful.
+
+### early_stopping_rounds
+
+This parameter will stop training if the validation metric is not improving after the last early stopping round. That should be defined in pair with a number of iterations. If you set it too large you increase the change of overfitting (but your model can be better).
+**The rule of thumb is to have it at 10% of your num_iterations.**
+
+### categorical_feature
+ 
+It is common to represent categorical features with one-hot encoding, but this approach is suboptimal for tree learners. Particularly for high-cardinality categorical features, a tree built on one-hot features tends to be unbalanced and needs to grow very deep to achieve good accuracy.
+
+Instead of one-hot encoding, the optimal solution is to split on a categorical feature by partitioning its categories into 2 subsets. If the feature has k categories, there are 2^(k-1) - 1 possible partitions. But there is an efficient solution for regression trees[8]. It needs about O(k * log(k)) to find the optimal partition.
+
+The basic idea is to sort the categories according to the training objective at each split. More specifically, LightGBM sorts the histogram (for a categorical feature) according to its accumulated values (sum_gradient / sum_hessian) and then finds the best split on the sorted histogram. 
+   
+Even though the default value is "auto", it's highly recommended to set categorical feature manually as errors often happen.
+
+### lgbm feval
+Sometimes you want to define a custom evaluation function to measure the performance of your model you need to create a “feval“ function.
+Feval function should accept two parameters:
+- preds
+- train_data   
+
+and return:
+
+- eval_name
+- eval_result
+- is_higher_better
+
+## Regression vs Classification
+
+! [alt text](https://miro.medium.com/max/596/0*Kf9stUagSPKBeU2J.png)
+
+You can learn about best default parameters for many problems both for lightGBM and XGBoost.
+TOCHECK: https://sites.google.com/view/lauraepp/parameters
