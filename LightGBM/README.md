@@ -1,3 +1,5 @@
+# LightGBM
+
 Source: http://www.audentia-gestion.fr/MICROSOFT/lightgbm.pdf
 
 Gradient Boosting Decision Tree (GBDT)
@@ -8,6 +10,8 @@ Solution: -> LightGBM
 Using two novel techniques: Gradient-based One-Side Sampling (GOSS) and Exclusive Feature Bundling (EFB).
 With histogram-based algorithm, to regroup continuous feature values into discrete bins and uses these
 bins to construct feature histograms during training.
+
+![alt text](https://slideplayer.com/slide/17648091/105/images/53/LGBM+Stands+for+Light+Gradient+Boosted+Machines.+It+is+a+library+for+training+GBMs+developed+by+Microsoft%2C+and+it+competes+with+XGBoost..jpg)
 
 Gradient-based One-Side Sampling (GOSS). While there is no native weight for data instance in
 GBDT, we notice that data instances with different gradients play different roles in the computation
@@ -72,6 +76,8 @@ gradients and selects the top a×100% instances. Then it randomly samples b×100
 the rest of the data. After that, GOSS amplifies the sampled data with small gradients by a constant
 (1−a)/b when calculating the information gain. By doing so, we put more focus on the under-trained
 instances without changing the original data distribution by much.
+
+![alt text](https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory2&fname=http%3A%2F%2Fcfile10.uf.tistory.com%2Fimage%2F99BA2D3A5B54B00708F292)
 
 ## Exclusive Feature Bundling
 
