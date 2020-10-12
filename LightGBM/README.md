@@ -123,3 +123,66 @@ features can be identified from the feature bundles. Since the histogram-based a
 discrete bins instead of continuous values of the features, we can construct a feature bundle by letting
 exclusive features reside in different bins. This can be done by adding offsets to the original values of
 the features.
+
+## Gradient Boosting methods
+
+https://towardsdatascience.com/understanding-lightgbm-parameters-and-how-to-tune-them-6764e20c6e5b
+With LightGBM you can run different types of Gradient Boosting methods. You have: GBDT, DART, and GOSS which can be specified with the “boosting“ parameter.
+
+### GBDT
+
+This method is the **traditional Gradient Boosting Decision Tree** that was first suggested in this article and is the algorithm behind some great libraries like XGBoost and pGBRT.
+It is based on three important principles:
+- Weak learners (decision trees)
+- Gradient Optimization
+- Boosting Technique
+
+So in the gbdt method we have a lot of decision trees(weak learners). Those trees are built sequentially:
+
+- first tree learns how to fit to the target variable
+- second tree learns how to fit to the residual (difference) between the predictions of the first tree and the ground truth
+- The third tree learns how to fit the residuals of the second tree and so on.
+
+**All those trees are trained by propagating the gradients of errors throughout the system**.
+The main drawback of gbdt is that finding the best split points in each tree node is **time-consuming** and **memory-consuming** operation other boosting methods try to tackle that problem.
+
+### DART
+
+https://arxiv.org/pdf/1505.01866.pdf
+-> Method that uses **dropout**, standard in Neural Networks, to improve model regularization and deal with some other less-obvious problems.
+Gbdt suffers from over-specialization, which means trees added at later iterations tend to impact the prediction of only a few instances and make a negligible contribution towards the remaining instances. **Adding dropout makes it more difficult for the trees at later iterations to specialize on those few samples and hence improves the performance**.
+
+![alt text](https://www.researchgate.net/profile/Ran_Gilad-Bachrach/publication/276149305/figure/fig2/AS:669315888070698@1536588751951/The-average-contribution-of-the-trees-in-the-ensemble-for-different-learning-algorithms_Q320.jpg)
+
+DART diverges from MART at two places. First, when computing the
+gradient that the next tree will fit, only a random subset of the existing ensemble is considered. The second place is when adding the new tree to the ensemble where
+DART performs a normalization step. DART scales the new tree T by a factor of
+1/k such that it will have the same order of magnitude
+as the dropped trees, with k the number of trees dropped.   
+On
+one extreme, if no tree is dropped, DART is no different than MART. On the other extreme, if all the trees
+are dropped, the DART is no different than random
+forest.
+
+### GOSS
+
+Described above.   
+GOSS suggests a **sampling method based on the gradient** to avoid searching for the whole search space
+
+### Which one is the best ?
+
+![alt text](https://miro.medium.com/max/587/0*TyyFwfF5AM5M_x2T.png)
+
+## Histogram based decision tree
+
+Source: https://mlexplained.com/2018/01/05/lightgbm-and-xgboost-explained/   
+
+The amount of time it takes to build a tree is proportional to the number of splits that have to be evaluated. Often, small changes in the split don't make much of a difference in the performance of the tree. Histogram-based methods take advantage of this fact by grouping features into a set of bins and perform splitting on the bins instead of the features. This is equivalent to subsampling the number of splits that the model evaluates. Since the features can be binned before building each tree, this method can greatly speed up training, reducing the computational complexity to O(n_{data} n_{bins}).   
+Though conceptually simple, histogram-based methods present several choices that the user has to make. Firstly the number of bins creates a trade-off between speed and accuracy: the more bins there are, the more accurate the algorithm is, but the slower it is as well. Secondly, how to divide the features into discrete bins is a non-trivial problem: dividing the bins into equal intervals (the most simple method) can often result in an unbalanced allocation of data.   
+
+## Ignoring sparse inputs (xgboost and lightGBM)
+
+Xgboost and lightGBM tend to be used on tabular data or text data that has been vectorized. Therefore, the inputs to xgboost and lightGBM tend to be sparse. Since the vast majority of the values will be 0, **having to look through all the values of a sparse feature is wasteful**. Xgboost proposes to ignore the 0 features when computing the split, then allocating all the data with missing values to whichever side of the split reduces the loss more. This reduces the number of samples that have to be used when evaluating each split, speeding up the training process.   
+Incidentally, xgboost and lightGBM both treat missing values in the same way as xgboost treats the zero values in sparse matrices; **it ignores them during split finding, then allocates them to whichever side reduces the loss the most**. 
+Though lightGBM does not enable ignoring zero values by default, it has an option called zero_as_missing which, if set to True, will regard all zero values as missing. According to this thread on GitHub, lightGBM will treat missing values in the same way as xgboost as long as the parameter use_missing is set to True (which is the default behavior).
+
