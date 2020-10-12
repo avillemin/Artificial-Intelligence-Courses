@@ -240,7 +240,7 @@ and return:
 
 ## Regression vs Classification
 
-! [alt text](https://miro.medium.com/max/596/0*Kf9stUagSPKBeU2J.png)
+![alt text](https://miro.medium.com/max/596/0*Kf9stUagSPKBeU2J.png)
 
 You can learn about best default parameters for many problems both for lightGBM and XGBoost.
 TOCHECK: https://sites.google.com/view/lauraepp/parameters
