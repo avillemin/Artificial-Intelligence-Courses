@@ -2,13 +2,13 @@
 
 Source: http://www.audentia-gestion.fr/MICROSOFT/lightgbm.pdf
 
-Gradient Boosting Decision Tree (GBDT)
+**Gradient Boosting Decision Tree** (GBDT)   
 Problem: The efficiency and scalability are still unsatisfactory when the feature dimension is high and data size is large.
 The most time-consuming part in learning a decision tree is to find the best split points.
 Solution: -> LightGBM
 
-Using two novel techniques: Gradient-based One-Side Sampling (GOSS) and Exclusive Feature Bundling (EFB).
-With histogram-based algorithm, to regroup continuous feature values into discrete bins and uses these
+Using two novel techniques: **Gradient-based One-Side Sampling (GOSS)** and **Exclusive Feature Bundling (EFB)**.
+With **histogram-based algorithm**, to **regroup continuous feature values into discrete bins** and uses these
 bins to construct feature histograms during training.
 
 ![alt text](https://slideplayer.com/slide/17648091/105/images/53/LGBM+Stands+for+Light+Gradient+Boosted+Machines.+It+is+a+library+for+training+GBMs+developed+by+Microsoft%2C+and+it+competes+with+XGBoost..jpg)
